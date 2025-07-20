@@ -1,5 +1,23 @@
 const drones = require("../data/drone");
-const {droneFeeds} = require("../data/droneFeed")
+const {droneFeeds} = require("../data/droneFeed");
+const { droneVitals } = require("../data/droneVitals");
+const droneActions = require("../data/droneActions");
+const { missionLogs } = require("../data/missionLogs");
+const {
+    loadDroneActions,
+    saveDroneActions
+  } = require("../data/droneActions");
+  
+
+//  Keep updating vitals every 3s --> mock data generator
+setInterval(() => {
+    droneVitals.forEach((vital) => {
+      vital.temperature = +(vital.temperature + (Math.random() - 0.5)).toFixed(1);
+      vital.battery = Math.max(0, Math.min(100, vital.battery + Math.floor(Math.random() * 3 - 1)));
+      vital.signal = `-${60 + Math.floor(Math.random() * 20)}dBm`;
+      vital.updated_at = new Date();
+    });
+  }, 3000);
 
 exports.getAllDrones = (req, res) => {
   try {
@@ -43,4 +61,76 @@ exports.getDroneFeed = (req, res) => {
       imageBase64: feed.images[index],
       timestamp: now.toISOString()
     });
+  };
+
+  // polling vitals feed
+exports.getDroneVitals = (req, res) => {
+    const droneId = parseInt(req.params.id);
+    const vital = droneVitals.find(v => v.drone_id === droneId);
+  
+    if (!vital) {
+      return res.status(404).json({ error: "Drone vitals not found" });
+    }
+  
+    res.json({
+      temperature: vital.temperature,
+      battery: vital.battery,
+      signal: vital.signal,
+      timestamp: vital.updated_at.toISOString()
+    });
+  };
+
+  exports.sendCommandToDrone = (req, res) => {
+    const droneId = parseInt(req.params.id);
+  const { action } = req.body;
+
+  // Simulated user ID 
+  const userId = 101;
+  const actions = loadDroneActions(); // Load existing
+
+  // Create new action record
+  const newAction = {
+    id: actions.length + 1,
+    drone_id: droneId,
+    user_id: userId,
+    action,
+    action_current_status: "completed", // as it is immediate
+    created_at: new Date(),
+    updated_at: new Date(),
+  };
+
+
+actions.push(newAction);
+  saveDroneActions(actions); // Write back to file
+  console.log("droneActions File Updated"); //droneActions.json file updated with latest action
+
+  res.status(200).json({
+    message: `Command '${action}' executed successfully`,
+    data: newAction,
+  });
+  };
+
+  exports.getDroneActions = (req, res) => { // Returns all drone command actions from the JSON file for command history tracking
+    const actions = loadDroneActions();
+    res.status(200).json({ data: actions });
+  };
+
+  exports.getMissionLogs = (req, res) => { //get mission inspection logs
+    res.json(missionLogs); 
+    exports.getMissionLogs = (req, res) => {
+        try {
+          return res.status(200).json({
+            status: "success",
+            message: "Mission logs retrieved successfully",
+            data: missionLogs,
+          });
+        } catch (error) {
+          console.error("Error fetching mission logs:", error);
+          return res.status(500).json({
+            status: "error",
+            message: "Failed to retrieve mission logs",
+            data: [],
+          });
+        }
+      };
   };
