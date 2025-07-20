@@ -7,5 +7,14 @@
     "action_current_status": "completed",
     "created_at": "2025-07-20T13:03:15.114Z",
     "updated_at": "2025-07-20T13:03:15.114Z"
+  },
+  {
+    "id": 2,
+    "drone_id": 1,
+    "user_id": 101,
+    "action": "pause_mission",
+    "action_current_status": "completed",
+    "created_at": "2025-07-20T16:37:57.044Z",
+    "updated_at": "2025-07-20T16:37:57.044Z"
   }
 ]
