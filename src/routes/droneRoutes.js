@@ -9,4 +9,6 @@ router.get("/:id/feed", droneController.getDroneFeed);
 router.get("/:id/vitals", droneController.getDroneVitals);
 // POST /api/drones/:id/command
 router.post("/:id/command", droneController.sendCommandToDrone);
+// GET /api/logs
+router.get("/logs", droneController.getMissionLogs);
 module.exports = router;

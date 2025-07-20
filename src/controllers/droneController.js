@@ -2,6 +2,7 @@ const drones = require("../data/drone");
 const {droneFeeds} = require("../data/droneFeed");
 const { droneVitals } = require("../data/droneVitals");
 const droneActions = require("../data/droneActions");
+const { missionLogs } = require("../data/missionLogs");
 const {
     loadDroneActions,
     saveDroneActions
@@ -112,4 +113,24 @@ actions.push(newAction);
   exports.getDroneActions = (req, res) => { // Returns all drone command actions from the JSON file for command history tracking
     const actions = loadDroneActions();
     res.status(200).json({ data: actions });
+  };
+
+  exports.getMissionLogs = (req, res) => { //get mission inspection logs
+    res.json(missionLogs); 
+    exports.getMissionLogs = (req, res) => {
+        try {
+          return res.status(200).json({
+            status: "success",
+            message: "Mission logs retrieved successfully",
+            data: missionLogs,
+          });
+        } catch (error) {
+          console.error("Error fetching mission logs:", error);
+          return res.status(500).json({
+            status: "error",
+            message: "Failed to retrieve mission logs",
+            data: [],
+          });
+        }
+      };
   };
