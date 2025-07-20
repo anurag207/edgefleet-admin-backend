@@ -13,13 +13,13 @@ const http = require("http").createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(http, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   }
 });
 
 app.use(cors({
-    origin: "http://localhost:5173", 
+    origin: process.env.FRONTEND_URL, 
     credentials: true
   }));
   app.use(express.json());
