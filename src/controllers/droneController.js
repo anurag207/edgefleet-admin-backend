@@ -1,6 +1,12 @@
 const drones = require("../data/drone");
 const {droneFeeds} = require("../data/droneFeed");
 const { droneVitals } = require("../data/droneVitals");
+const droneActions = require("../data/droneActions");
+const {
+    loadDroneActions,
+    saveDroneActions
+  } = require("../data/droneActions");
+  
 
 //  Keep updating vitals every 3s --> mock data generator
 setInterval(() => {
@@ -71,4 +77,39 @@ exports.getDroneVitals = (req, res) => {
       signal: vital.signal,
       timestamp: vital.updated_at.toISOString()
     });
+  };
+
+  exports.sendCommandToDrone = (req, res) => {
+    const droneId = parseInt(req.params.id);
+  const { action } = req.body;
+
+  // Simulated user ID 
+  const userId = 101;
+  const actions = loadDroneActions(); // Load existing
+
+  // Create new action record
+  const newAction = {
+    id: actions.length + 1,
+    drone_id: droneId,
+    user_id: userId,
+    action,
+    action_current_status: "completed", // as it is immediate
+    created_at: new Date(),
+    updated_at: new Date(),
+  };
+
+
+actions.push(newAction);
+  saveDroneActions(actions); // Write back to file
+  console.log("droneActions File Updated"); //droneActions.json file updated with latest action
+
+  res.status(200).json({
+    message: `Command '${action}' executed successfully`,
+    data: newAction,
+  });
+  };
+
+  exports.getDroneActions = (req, res) => { // Returns all drone command actions from the JSON file for command history tracking
+    const actions = loadDroneActions();
+    res.status(200).json({ data: actions });
   };
