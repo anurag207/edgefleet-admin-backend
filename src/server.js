@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const droneRoutes = require("./routes/droneRoutes");
+const authRoutes = require("./routes/authRoutes");
 const cors = require("cors");
 const { droneFeeds } = require("./data/droneFeed");
 const { droneVitals } = require("./data/droneVitals");
@@ -23,6 +24,7 @@ app.use(cors({
   }));
   app.use(express.json());
 
+  app.use("/api/auth", authRoutes);
 app.use("/api/drones", droneRoutes);
 
 
