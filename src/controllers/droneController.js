@@ -1,5 +1,16 @@
 const drones = require("../data/drone");
-const {droneFeeds} = require("../data/droneFeed")
+const {droneFeeds} = require("../data/droneFeed");
+const { droneVitals } = require("../data/droneVitals");
+
+//  Keep updating vitals every 3s --> mock data generator
+setInterval(() => {
+    droneVitals.forEach((vital) => {
+      vital.temperature = +(vital.temperature + (Math.random() - 0.5)).toFixed(1);
+      vital.battery = Math.max(0, Math.min(100, vital.battery + Math.floor(Math.random() * 3 - 1)));
+      vital.signal = `-${60 + Math.floor(Math.random() * 20)}dBm`;
+      vital.updated_at = new Date();
+    });
+  }, 3000);
 
 exports.getAllDrones = (req, res) => {
   try {
@@ -42,5 +53,22 @@ exports.getDroneFeed = (req, res) => {
     res.json({
       imageBase64: feed.images[index],
       timestamp: now.toISOString()
+    });
+  };
+
+  // polling vitals feed
+exports.getDroneVitals = (req, res) => {
+    const droneId = parseInt(req.params.id);
+    const vital = droneVitals.find(v => v.drone_id === droneId);
+  
+    if (!vital) {
+      return res.status(404).json({ error: "Drone vitals not found" });
+    }
+  
+    res.json({
+      temperature: vital.temperature,
+      battery: vital.battery,
+      signal: vital.signal,
+      timestamp: vital.updated_at.toISOString()
     });
   };

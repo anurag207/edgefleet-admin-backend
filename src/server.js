@@ -4,6 +4,7 @@ const express = require("express");
 const droneRoutes = require("./routes/droneRoutes");
 const cors = require("cors");
 const { droneFeeds } = require("./data/droneFeed");
+const { droneVitals } = require("./data/droneVitals");
 
 const app = express();
 const http = require("http").createServer(app);
@@ -27,6 +28,7 @@ app.use("/api/drones", droneRoutes);
 app.get("/", (req, res) => {
   res.send("<h1>Server is running 🎉</h1>");
 });
+
 
 io.on("connection", (socket) => {
   console.log("Client connected via WebSocket");
@@ -62,7 +64,3 @@ http.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
 });
 
-// Start server
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT} 🚀`);
-// });
