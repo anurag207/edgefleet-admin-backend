@@ -35,10 +35,9 @@ PORT=1900
 You can use any available port; default is 1900.
 
 4. Start Development Server
-bash
-Copy
-Edit
+
 npm start
+
 🔐 Admin Login for Testing
 Use the following dummy credentials for local development:
 
@@ -84,6 +83,7 @@ POST	/api/auth/login	Admin login (email/pass)
 
 📡 Realtime Architecture
 Drone Image Feed (Socket.IO)
+
 Simulated images rotate every 3 seconds (via index).
 
 Backend emits image feed to frontend via Socket.IO:
@@ -93,11 +93,12 @@ Efficient and real-time (no polling)
 Consumed in frontend via DroneFeed.jsx
 
 Drone Vitals (Polling)
+
 Backend updates vitals (temperature, battery, signal) every 3s using Math.random().
 
 Frontend polls every 3 seconds to display updated vitals via DroneVitals.jsx.
 
- Architecture Diagram
+# Architecture Diagram
 
 Client (React Frontend)
       │
@@ -122,42 +123,45 @@ Server (Node.js + Express)
 
 
 Design Decisions
-✅ Socket.IO is used for live feed (more efficient than polling).
+1. Socket.IO is used for live feed (more efficient than polling).
 
-✅ Polling is used for vitals due to smaller data size.
+2. Polling is used for vitals due to smaller data size.
 
-✅ In-memory + JSON used instead of a real database for simplicity.
+3. In-memory + JSON used instead of a real database for simplicity.
 
-✅ Admin credentials are stored hashed using bcrypt.
+4. Admin credentials are stored hashed using bcrypt.
 
-✅ Separation of concern with routes, controllers, and data layers.
+5. Separation of concern with routes, controllers, and data layers.
 
-✅ Realistic simulation with setInterval, base64 images, and mock vitals.
+6. Realistic simulation with setInterval, base64 images, and mock vitals.
 
 Features
-Simulated drone list and details
+1. Simulated drone list and details
 
-Real-time image feed (via Socket.IO)
+2. Real-time image feed (via Socket.IO)
 
-Simulated vitals with polling
+3. Simulated vitals with polling
 
-Global drone commands (pause/return)
+4. Global drone commands (pause/return)
 
-Mission logs with position & timestamp
+5. Mission logs with position & timestamp
 
-Role-based login with password hashing
+6. Role-based login with password hashing
 
-Data persistence for commands using JSON
+7. Logging incoming API Requests to file
+
+7. Data persistence for commands using JSON
 
 Future Improvements
-Replace polling with WebSocket for vitals
 
-Move to MongoDB or PostgreSQL
+1. Integrate User Id with drone actions
 
-Use JWT + refresh tokens for secure auth
+2. Use current_drone_status for status when an action by drone is being executed
 
-Add support for drone location tracking on maps
+2. Use JWT + refresh tokens for secure auth
 
-Implement rate-limiting and error logging
+4. Add support for drone location tracking on maps
+
+
 
 

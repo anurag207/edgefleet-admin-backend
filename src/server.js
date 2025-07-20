@@ -6,6 +6,9 @@ const authRoutes = require("./routes/authRoutes");
 const cors = require("cors");
 const { droneFeeds } = require("./data/droneFeed");
 const { droneVitals } = require("./data/droneVitals");
+const fs = require("fs");
+const morgan = require("morgan");
+const path = require("path");
 
 const app = express();
 const http = require("http").createServer(app);
@@ -23,6 +26,11 @@ app.use(cors({
     credentials: true
   }));
   app.use(express.json());
+
+  // Logging API Requests using morgan to file
+const logStream = fs.createWriteStream(path.join(__dirname, "../api.log"), { flags: 'a' });
+app.use(morgan('combined', { stream: logStream }));
+
 
   app.use("/api/auth", authRoutes);
 app.use("/api/drones", droneRoutes);
