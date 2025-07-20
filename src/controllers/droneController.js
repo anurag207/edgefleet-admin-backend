@@ -1,4 +1,5 @@
 const drones = require("../data/drone");
+const {droneFeeds} = require("../data/droneFeed")
 
 exports.getAllDrones = (req, res) => {
   try {
@@ -26,6 +27,20 @@ exports.getAllDrones = (req, res) => {
 };
 
 exports.getDroneFeed = (req, res) => {
-    const droneId = req.params.id;
     // Return drone feed imageBase64 and timestamp
+    const droneId = parseInt(req.params.id);
+    const feed = droneFeeds.find(f => f.droneId === droneId);
+    
+    if (!feed) {
+      return res.status(404).json({ error: "Drone feed not found" });
+    }
+    
+    // Get current time-based index (changes every 3 seconds)
+    const now = new Date();
+    const index = Math.floor(now.getTime() / 3000) % feed.images.length; //rotating images
+    
+    res.json({
+      imageBase64: feed.images[index],
+      timestamp: now.toISOString()
+    });
   };
