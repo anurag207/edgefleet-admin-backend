@@ -24,3 +24,8 @@ exports.getAllDrones = (req, res) => {
     });
   }
 };
+
+exports.getDroneFeed = (req, res) => {
+    const droneId = req.params.id;
+    // Return drone feed imageBase64 and timestamp
+  };
